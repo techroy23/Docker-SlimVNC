@@ -6,6 +6,19 @@ export DISPLAY=:0
 mkdir -p ~/Templates
 echo " "
 
+echo "Setting up variables ..."
+if [ -z "$VNC_PASS" ]; then
+    echo "WARNING: VNC_PASS was not set! Using default password: 'password'"
+    echo "Consider redeploying the Docker container with -e VNC_PASS='your_secure_password'"
+    VNC_PASS="password"  # Default fallback
+fi
+
+VNC_DISPLAY=":0"
+VNC_PORT=5901
+NOVNC_PORT=6080
+SCREEN_RESOLUTION="1600x900x24"
+echo " "
+
 echo "Setting default terminal emulator..."
 update-alternatives --set x-terminal-emulator /usr/bin/lxterminal
 echo " "
@@ -19,14 +32,6 @@ EOF
 chmod +x /usr/local/bin/google-chrome-no-sandbox
 update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-no-sandbox 100
 update-alternatives --set x-www-browser /usr/local/bin/google-chrome-no-sandbox
-echo " "
-
-echo "Setting up variables ..."
-VNC_PASS="password"
-VNC_DISPLAY=":0"
-VNC_PORT=5901
-NOVNC_PORT=6080
-SCREEN_RESOLUTION="1600x900x24"
 echo " "
 
 echo "Storing the VNC password ..."
