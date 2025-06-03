@@ -11,7 +11,6 @@ A Dockerized desktop environment featuring Openbox, LXPanel, and Conky for a lig
 - **System monitoring with Conky**
 - **Optimized usability within containerized setups**
 
-## Installation
-### **Build the Docker image**
-```bash
-docker build -t dockerized-lightweight-desktop .
+## Access
+- VNC Client: localhost:5901
+- Web Interface (noVNC): http://localhost:6080
