@@ -3,7 +3,7 @@
 echo "Starting up ..."
 set -e
 export DISPLAY=:0
-mkdir ~/Templates
+mkdir -p ~/Templates
 echo " "
 
 echo "Setting default terminal emulator..."
@@ -11,6 +11,7 @@ update-alternatives --set x-terminal-emulator /usr/bin/lxterminal
 echo " "
 
 echo "Setting default web browser..."
+mkdir -p ~/.config/google-chrome
 tee /usr/local/bin/google-chrome-no-sandbox <<EOF
 #!/bin/bash
 /usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus "\$@"
