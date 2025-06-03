@@ -10,7 +10,9 @@ echo "Setting up variables ..."
 if [ -z "$VNC_PASS" ]; then
     echo "WARNING: VNC_PASS was not set! Using default password: 'password'"
     echo "Consider redeploying the Docker container with -e VNC_PASS='your_secure_password'"
-    VNC_PASS="password"  # Default fallback
+    export VNC_PASS="password"  # Default fallback
+else
+    export VNC_PASS
 fi
 
 VNC_DISPLAY=":0"
