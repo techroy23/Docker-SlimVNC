@@ -13,6 +13,7 @@ A Dockerized desktop environment featuring Openbox, LXPanel, and Conky for a lig
 
 ## Run
 ```
+
 docker volume create docker-slimvnc-google-chrome
 
 docker run -d --name docker-slimvnc \
@@ -20,8 +21,12 @@ docker run -d --name docker-slimvnc \
   --shm-size=2gb \
   -v docker-slimvnc-google-chrome:/root/.config/google-chrome \
   ghcr.io/techroy23/docker-slimvnc:latest
+
 ```
 
 ## Access
 - VNC Client: localhost:5901
 - Web Interface (noVNC): http://localhost:6080
+
+## Screenshot
+![Alt text](screenshot/img1.png)
