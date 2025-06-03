@@ -11,6 +11,11 @@ A Dockerized desktop environment featuring Openbox, LXPanel, and Conky for a lig
 - **System monitoring with Conky**
 - **Optimized usability within containerized setups**
 
+## Run
+```
+docker run -d --name docker-slimvnc -p 5901:5901 -p 6080:6080 --shm-size=2gb ghcr.io/techroy23/docker-slimvnc:latest
+```
+
 ## Access
 - VNC Client: localhost:5901
 - Web Interface (noVNC): http://localhost:6080
