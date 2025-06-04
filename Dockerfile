@@ -14,7 +14,7 @@ RUN git clone https://github.com/novnc/noVNC /opt/noVNC && \
     chmod +x /opt/noVNC/utils/novnc_proxy && \
     cp /opt/noVNC/vnc.html /opt/noVNC/index.html
 
-# RUN git clone https://github.com/novnc/websockify /opt/noVNC/utils/websockify
+RUN git clone https://github.com/novnc/websockify /opt/noVNC/utils/websockify
 
 RUN sed -i 's|Exec=/usr/bin/google-chrome-stable %U|Exec=/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds %U |' /usr/share/applications/com.google.Chrome.desktop
 RUN sed -i 's|Exec=/usr/bin/google-chrome-stable|Exec=/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds |' /usr/share/applications/com.google.Chrome.desktop
