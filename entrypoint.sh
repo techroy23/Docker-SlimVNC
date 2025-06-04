@@ -147,6 +147,15 @@ for i in {1..3}; do
 done
 echo " "
 
+echo "Starting custom-entrypoint.sh ..."
+if [ -f "/custom-entrypoint.sh" ]; then
+    echo "Running custom-entrypoint.sh in the background ..."
+    /custom-entrypoint.sh &
+else
+    echo "Skipping custom-entrypoint.sh as it is not present."
+fi
+echo " "
+
 echo "##### Running Indefinitely #####"
 tail -f /dev/null
 echo " "
