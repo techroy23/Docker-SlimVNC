@@ -147,6 +147,12 @@ for i in {1..3}; do
 done
 echo " "
 
-echo "##### Running Indefinitely #####"
-while true; do sleep 86400; done 
-echo " "
+# echo "##### Running Indefinitely #####"
+# while true; do sleep 86400; done 
+# echo " "
+
+echo " [ NO SLEEP ... ] "
+echo " [ NO SLEEP ... ] "
+echo " [ NO SLEEP ... ] "
+echo " [ NO SLEEP ... ] "
+echo " [ NO SLEEP ... ] "
