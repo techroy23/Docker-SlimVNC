@@ -3,7 +3,12 @@
 echo "Starting up ..."
 set -e
 export DISPLAY=:0
+mkdir -p ~/.vnc
+mkdir -p ~/.config/google-chrome
 mkdir -p ~/Templates
+mkdir -p /run/user/$(id -u)
+chmod 700 /run/user/$(id -u)
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
 echo " "
 
 echo "Setting up variables ..."
@@ -21,30 +26,36 @@ NOVNC_PORT=6080
 SCREEN_RESOLUTION="1600x900x24"
 echo " "
 
-echo "Setting default terminal emulator..."
-update-alternatives --set x-terminal-emulator /usr/bin/lxterminal
+echo "Storing the VNC password ..."
+x11vnc -storepasswd "$VNC_PASS" ~/.vnc/passwd
 echo " "
 
-echo "Setting default web browser..."
-mkdir -p ~/.config/google-chrome
+echo "Setting defaults ..."
+
 tee /usr/local/bin/google-chrome-no-sandbox <<EOF
 #!/bin/bash
 /usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds "\$@"
 EOF
+
 chmod +x /usr/local/bin/google-chrome-no-sandbox
 update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-no-sandbox 100
 update-alternatives --set x-www-browser /usr/local/bin/google-chrome-no-sandbox
+update-alternatives --set x-terminal-emulator /usr/bin/lxterminal
 echo " "
 
-echo "Storing the VNC password ..."
-mkdir -p ~/.vnc
-x11vnc -storepasswd "$VNC_PASS" ~/.vnc/passwd
-echo " "
-
-echo "Setting up XDG_RUNTIME_DIR ..."
-mkdir -p /run/user/$(id -u)
-chmod 700 /run/user/$(id -u)
-export XDG_RUNTIME_DIR=/run/user/$(id -u)
+echo "Starting virtual framebuffer ..."
+Xvfb $VNC_DISPLAY -screen 0 $SCREEN_RESOLUTION &
+for i in {1..3}; do
+    echo "Waiting for Xvfb to start..."
+    sleep 5
+    if pgrep -x Xvfb > /dev/null; then
+        echo "Xvfb started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: Xvfb failed to start."
+        exit 255
+    fi
+done
 echo " "
 
 echo "Starting D-Bus..."
@@ -52,37 +63,92 @@ mkdir -p /run/dbus
 export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
 dbus-uuidgen > /etc/machine-id
 dbus-daemon --system --fork
+for i in {1..3}; do
+    echo "Waiting for D-Bus to start..."
+    sleep 5
+    if pgrep -x dbus-daemon > /dev/null; then
+        echo "D-Bus started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: D-Bus failed to start."
+        exit 255
+    fi
+done
 echo " "
 
-echo "Starting virtual framebuffer ..."
-Xvfb $VNC_DISPLAY -screen 0 $SCREEN_RESOLUTION &
-
-echo "Starting Openbox ..."
-sleep 5
+echo "Starting Openbox..."
 openbox &
+for i in {1..3}; do
+    echo "Waiting for Openbox to start..."
+    sleep 5
+    if pgrep -x openbox > /dev/null; then
+        echo "Openbox started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: Openbox failed to start."
+        exit 255
+    fi
+done
 echo " "
 
-echo "Starting LXPanel ..."
-sleep 5
+echo "Starting LXPanel..."
 lxpanel &
+for i in {1..3}; do
+    echo "Waiting for LXPanel to start..."
+    sleep 5
+    if pgrep -x lxpanel > /dev/null; then
+        echo "LXPanel started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: LXPanel failed to start."
+        exit 255
+    fi
+done
 echo " "
 
-echo "Starting Conky ..."
-sleep 5
+echo "Starting Conky..."
 conky -d
+for i in {1..3}; do
+    echo "Waiting for Conky to start..."
+    sleep 5
+    if pgrep -x conky > /dev/null; then
+        echo "Conky started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: Conky failed to start."
+        exit 255
+    fi
+done
 echo " "
 
 echo "Starting the VNC server ..."
 x11vnc -quiet -display $VNC_DISPLAY -rfbauth ~/.vnc/passwd -forever -rfbport $VNC_PORT -localhost &
+for i in {1..3}; do
+    echo "Waiting for VNC server to start..."
+    sleep 5
+    if pgrep -x x11vnc > /dev/null; then
+        echo "VNC server started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: VNC server failed to start."
+        exit 255
+    fi
+done
 echo " "
-
-# echo "Starting WebSockify to bridge VNC to the web ..."
-# cd /opt/noVNC/utils/websockify
-# ./run --web /opt/noVNC/ $NOVNC_PORT localhost:$VNC_PORT &> /opt/websockify.log &
-# echo " "
 
 echo "Starting noVNC on port $NOVNC_PORT..."
 /opt/noVNC/utils/novnc_proxy --vnc localhost:$VNC_PORT --listen $NOVNC_PORT &
+for i in {1..3}; do
+    echo "Waiting for noVNC to start..."
+    sleep 5
+    if pgrep -x novnc_proxy > /dev/null; then
+        echo "noVNC started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: noVNC failed to start."
+        exit 255
+    fi
+done
 echo " "
 
 echo "##### Running Indefinitely #####"
