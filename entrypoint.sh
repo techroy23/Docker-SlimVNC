@@ -76,12 +76,15 @@ echo "Starting the VNC server ..."
 x11vnc -quiet -display $VNC_DISPLAY -rfbauth ~/.vnc/passwd -forever -rfbport $VNC_PORT -localhost &
 echo " "
 
-echo "Starting WebSockify to bridge VNC to the web ..."
-cd /opt/noVNC/utils/websockify
-./run --web /opt/noVNC/ $NOVNC_PORT localhost:$VNC_PORT &> /opt/websockify.log &
+# echo "Starting WebSockify to bridge VNC to the web ..."
+# cd /opt/noVNC/utils/websockify
+# ./run --web /opt/noVNC/ $NOVNC_PORT localhost:$VNC_PORT &> /opt/websockify.log &
+# echo " "
+
+echo "Starting noVNC on port $NOVNC_PORT..."
+/opt/noVNC/utils/novnc_proxy --vnc localhost:$VNC_PORT --listen $NOVNC_PORT &
 echo " "
 
 echo "##### Running Indefinitely #####"
-tail -f /dev/null
-wait
+while true; do sleep 86400; done 
 echo " "
