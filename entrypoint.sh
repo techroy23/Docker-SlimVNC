@@ -29,7 +29,7 @@ echo "Setting default web browser..."
 mkdir -p ~/.config/google-chrome
 tee /usr/local/bin/google-chrome-no-sandbox <<EOF
 #!/bin/bash
-/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus "\$@"
+/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds "\$@"
 EOF
 chmod +x /usr/local/bin/google-chrome-no-sandbox
 update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-no-sandbox 100
@@ -39,6 +39,12 @@ echo " "
 echo "Storing the VNC password ..."
 mkdir -p ~/.vnc
 x11vnc -storepasswd "$VNC_PASS" ~/.vnc/passwd
+echo " "
+
+echo "Setting up XDG_RUNTIME_DIR ..."
+mkdir -p /run/user/$(id -u)
+chmod 700 /run/user/$(id -u)
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
 echo " "
 
 echo "Starting D-Bus..."
