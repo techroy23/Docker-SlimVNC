@@ -2,13 +2,16 @@
 
 echo "Starting up ..."
 set -e
-export DISPLAY=:0
 mkdir -p ~/.vnc
 mkdir -p ~/.config/google-chrome
 mkdir -p ~/Templates
+mkdir -p /run/dbus
 mkdir -p /run/user/$(id -u)
 chmod 700 /run/user/$(id -u)
+export DISPLAY=:0
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
+echo "$DISPLAY"
+echo "$XDG_RUNTIME_DIR"
 echo " "
 
 echo "Setting up variables ..."
@@ -17,26 +20,20 @@ if [ -z "$VNC_PASS" ]; then
     echo "Consider redeploying the Docker container with -e VNC_PASS='your_secure_password'"
     export VNC_PASS="password"  # Default fallback
 else
+    echo "Found password $VNC_PASS ..."
     export VNC_PASS
 fi
-
 VNC_DISPLAY=":0"
 VNC_PORT=5901
 NOVNC_PORT=6080
 SCREEN_RESOLUTION="1600x900x24"
 echo " "
 
-echo "Storing the VNC password ..."
-x11vnc -storepasswd "$VNC_PASS" ~/.vnc/passwd
-echo " "
-
 echo "Setting defaults ..."
-
 tee /usr/local/bin/google-chrome-no-sandbox <<EOF
 #!/bin/bash
 /usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds "\$@"
 EOF
-
 chmod +x /usr/local/bin/google-chrome-no-sandbox
 update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-no-sandbox 100
 update-alternatives --set x-www-browser /usr/local/bin/google-chrome-no-sandbox
@@ -59,7 +56,6 @@ done
 echo " "
 
 echo "Starting D-Bus..."
-mkdir -p /run/dbus
 export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
 dbus-uuidgen > /etc/machine-id
 dbus-daemon --system --fork
@@ -122,6 +118,7 @@ done
 echo " "
 
 echo "Starting the VNC server ..."
+x11vnc -storepasswd "$VNC_PASS" ~/.vnc/passwd
 x11vnc -quiet -display $VNC_DISPLAY -rfbauth ~/.vnc/passwd -forever -rfbport $VNC_PORT -localhost &
 for i in {1..3}; do
     echo "Waiting for VNC server to start..."
