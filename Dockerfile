@@ -4,7 +4,9 @@ RUN apt-get update
 
 RUN apt-get install -y git x11vnc xvfb dbus dbus-x11 
 RUN apt-get install -y openbox lxpanel lxterminal menu
-RUN apt-get install -y conky gdebi curl wget nano htop btop
+RUN apt-get install -y conky gdebi curl wget nano htop btop net-tools
+
+COPY conf/conky.conf /etc/conky/conky.conf
 
 RUN wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     gdebi --n /tmp/google-chrome-stable.deb && \
