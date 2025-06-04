@@ -138,7 +138,7 @@ echo "Starting noVNC on port $NOVNC_PORT..."
 for i in {1..3}; do
     echo "Waiting for noVNC to start..."
     sleep 5
-    if pgrep -x novnc_proxy > /dev/null; then
+    if pgrep -f "novnc_proxy|websockify|run" > /dev/null; then
         echo "noVNC started successfully!"
         break
     elif [ "$i" -eq 3 ]; then
