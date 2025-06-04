@@ -20,7 +20,6 @@ if [ -z "$VNC_PASS" ]; then
     echo "Consider redeploying the Docker container with -e VNC_PASS='your_secure_password'"
     export VNC_PASS="password"  # Default fallback
 else
-    echo "Found password $VNC_PASS ..."
     export VNC_PASS
 fi
 VNC_DISPLAY=":0"
@@ -30,7 +29,7 @@ SCREEN_RESOLUTION="1600x900x24"
 echo " "
 
 echo "Setting defaults ..."
-tee /usr/local/bin/google-chrome-no-sandbox <<EOF
+cat <<EOF > /usr/local/bin/google-chrome-no-sandbox
 #!/bin/bash
 /usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds "\$@"
 EOF
