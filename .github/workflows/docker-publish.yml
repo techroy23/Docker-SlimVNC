@@ -34,15 +34,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for 2 Minutes
-        run: sleep 120
+      - name: Wait for 2 Minutes with Countdown
+        run: |
+          for i in {120..1}; do
+            echo "⏳ Waiting... $i seconds remaining"
+            sleep 1
+          done
 
       - name: Dispatch to Sub Projects
         env:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         run: |
           REPOS=("techroy23/Docker-Peer2Profit" "techroy23/Docker-Wipter" "techroy23/Docker-UrNetwork")
-          
+
           for REPO in "${REPOS[@]}"; do
             echo "🔄 Sending dispatch to $REPO..."
             RESPONSE=$(curl -s -X POST \
@@ -50,9 +54,9 @@ jobs:
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/$REPO/actions/workflows/docker-publish.yml/dispatches \
               -d '{"ref":"main"}')
-            
+
             echo "✅ Response from GitHub: $RESPONSE"
-            
+
             if [[ "$RESPONSE" == *"Bad credentials"* ]]; then
               echo "❌ Error: Invalid GitHub token!"
               exit 1

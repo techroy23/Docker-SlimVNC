@@ -31,7 +31,7 @@ docker run -d --name docker-slimvnc \
 
 ## Explore these subprojects for additional functionality and integrations:
 Check them out for complementary tools and features!
-- **[Techroy23-Docker-Wipter](https://github.com/techroy23/Docker-Wipter)** - [Wipter Website](wipter.com/register?via=66075F1E60)
+- **[Techroy23-Docker-Wipter](https://github.com/techroy23/Docker-Wipter)** - [Wipter Website](https://wipter.com/register?via=66075F1E60)
 - **[Techroy23-Docker-Peer2Profit](https://github.com/techroy23/Docker-Peer2Profit)** - [Peer2Profit Telegram](https://t.me/peer2profit_app_bot?start=1628962882611800423c343)
 - **[Techroy23-Docker-UrNetwork](https://github.com/techroy23/Docker-UrNetwork)** - [UrNetwork Website](https://ur.io/c?bonus=0MYG84)
 
