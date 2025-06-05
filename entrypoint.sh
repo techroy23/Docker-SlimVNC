@@ -14,7 +14,7 @@ echo "$DISPLAY"
 echo "$XDG_RUNTIME_DIR"
 echo " "
 
-echo "Checking and removing stale Chrome Lock, VNC lock and Temporary files..."
+echo "Checking and removing stale VNC lock files and Temporary files..."
 ls /tmp/
 for lock_file in /tmp/.X[0-9]*-lock; do
     if [ -e "$lock_file" ]; then
@@ -172,13 +172,22 @@ else
 fi
 echo " "
 
+echo "#####  Checking and removing stale chrome files #####"
+files=(
+    "/root/.config/google-chrome/SingletonLock"
+    "/root/.config/google-chrome/SingletonSocket"
+    "/root/.config/google-chrome/SingletonCookie"
+)
+
+for file in "${files[@]}"; do
+    if [[ -e "$file" ]]; then
+        rm -rf "$file"
+        echo "Removed: $file"
+    else
+        echo "File not found: $file"
+    fi
+done
+
 echo "##### Running Indefinitely #####"
-
-ls ~/.config/google-chrome/ | grep Sing
-rm -rf /root/.config/google-chrome/SingletonLock
-rm -rf /root/.config/google-chrome/SingletonSocket
-rm -rf /root/.config/google-chrome/SingletonCookie
-ls ~/.config/google-chrome/ | grep Sing
-
 tail -f /dev/null
 echo " "
