@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build, Push Docker Image and Notify Sub Projects
 
 on:
   push:
@@ -25,7 +25,36 @@ jobs:
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
           -d "text=🚀 GitHub Action triggered in ${{ github.repository }} on branch ${{ github.ref }}"
 
-      - name: Build and Push Image
+      - name: Build and Push Docker Image
         run: |
           docker buildx build --platform linux/amd64 \
           -t ghcr.io/${{ github.actor }}/docker-slimvnc:latest --push .
+
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for 2 Minutes
+        run: sleep 120
+
+      - name: Dispatch to Sub Projects
+        env:
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+        run: |
+          REPOS=("techroy23/Docker-Peer2Profit" "techroy23/Docker-Wipter" "techroy23/Docker-UrNetwork")
+          
+          for REPO in "${REPOS[@]}"; do
+            echo "🔄 Sending dispatch to $REPO..."
+            RESPONSE=$(curl -s -X POST \
+              -H "Authorization: token $GHCR_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/$REPO/actions/workflows/docker-publish.yml/dispatches \
+              -d '{"ref":"main"}')
+            
+            echo "✅ Response from GitHub: $RESPONSE"
+            
+            if [[ "$RESPONSE" == *"Bad credentials"* ]]; then
+              echo "❌ Error: Invalid GitHub token!"
+              exit 1
+            fi
+          done
