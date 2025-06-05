@@ -17,7 +17,7 @@ jobs:
             echo "🔄 Sending dispatch to $REPO..."
             RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.GHCR_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/$REPO/actions/workflows/build.yml/dispatches \
+            https://api.github.com/repos/$REPO/actions/workflows/docker-publish.yml/dispatches \
             -d '{"event_type": "trigger-sub-build", "client_payload": {"ref":"main"}}')
 
             echo "✅ Response from GitHub: $RESPONSE"
