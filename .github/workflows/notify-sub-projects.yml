@@ -1,0 +1,21 @@
+name: Notify Sub Projects
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Define Repository List
+        run: |
+          REPOS=("techroy23/Docker-ProjX1" "techroy23/Docker-ProjX2" "techroy23/Docker-ProjX3")
+          
+          for REPO in "${REPOS[@]}"; do
+            curl -X POST -H "Authorization: token ${{ secrets.REPO_ACCESS_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$REPO/actions/workflows/build.yml/dispatches \
+            -d '{"ref":"main"}'
+          done
