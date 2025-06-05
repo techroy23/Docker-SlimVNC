@@ -14,6 +14,20 @@ echo "$DISPLAY"
 echo "$XDG_RUNTIME_DIR"
 echo " "
 
+echo "Checking for and removing stale VNC lock and temporary files..."
+for lock_file in /tmp/.X[0-9]*-lock; do
+    if [ -f "$lock_file" ]; then
+        echo " "
+        echo "Found stale $lock_file. Removing it..."
+        rm -f "$lock_file"
+    fi
+done
+if [ -d /tmp/.X11-unix ]; then
+        echo "Found stale /tmp/.X11-unix. Removing it..."
+    rm -rf /tmp/.X11-unix
+fi
+echo " "
+
 echo "Setting up variables ..."
 if [ -z "$VNC_PASS" ]; then
     echo "WARNING: VNC_PASS was not set! Using default password: 'password'"
