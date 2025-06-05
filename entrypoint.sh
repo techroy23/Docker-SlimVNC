@@ -14,17 +14,33 @@ echo "$DISPLAY"
 echo "$XDG_RUNTIME_DIR"
 echo " "
 
-echo "Checking for and removing stale VNC lock and temporary files..."
+echo "Checking and removing stale Chrome Lock, VNC lock and Temporary files..."
 for lock_file in /tmp/.X[0-9]*-lock; do
-    if [ -f "$lock_file" ]; then
+    if [ -e "$lock_file" ]; then
         echo " "
         echo "Found stale $lock_file. Removing it..."
         rm -f "$lock_file"
     fi
 done
-if [ -d /tmp/.X11-unix ]; then
+
+if [ -e /tmp/.X11-unix ]; then
         echo "Found stale /tmp/.X11-unix. Removing it..."
     rm -rf /tmp/.X11-unix
+fi
+
+if [ -e /root/.config/google-chrome/SingletonLock ]; then
+        echo "Found stale SingletonLock Removing it..."
+    rm -rf /root/.config/google-chrome/SingletonLock
+fi
+
+if [ -e /root/.config/google-chrome/SingletonSocket ]; then
+        echo "Found stale SingletonSocket Removing it..."
+    rm -rf /root/.config/google-chrome/SingletonSocket
+fi
+
+if [ -e /root/.config/google-chrome/SingletonCookie ]; then
+        echo "Found stale SingletonCookie Removing it..."
+    rm -rf /root/.config/google-chrome/SingletonCookie
 fi
 echo " "
 
