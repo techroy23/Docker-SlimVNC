@@ -11,11 +11,11 @@ jobs:
     steps:
       - name: Define Repository List
         run: |
-          REPOS=("techroy23/Docker-Docker-Peer2Profit" "techroy23/Docker-Wipter" "techroy23/Docker-UrNetwork")
+          REPOS=("techroy23/Docker-Peer2Profit" "techroy23/Docker-Wipter" "techroy23/Docker-UrNetwork")
 
           for REPO in "${REPOS[@]}"; do
             echo "🔄 Sending dispatch to $REPO..."
-            RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.REPO_ACCESS_TOKEN }}" \
+            RESPONSE=$(curl -X POST -H "Authorization: token ${{ secrets.GHCR_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$REPO/actions/workflows/build.yml/dispatches \
             -d '{"event_type": "trigger-sub-build", "client_payload": {"ref":"main"}}')
