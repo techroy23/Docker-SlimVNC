@@ -1,7 +1,10 @@
 name: Notify Sub Projects
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
     branches:
       - main
 
@@ -9,6 +12,9 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for 2 Minutes
+        run: sleep 120
+
       - name: Define Repository List
         run: |
           REPOS=("techroy23/Docker-Peer2Profit" "techroy23/Docker-Wipter" "techroy23/Docker-UrNetwork")
