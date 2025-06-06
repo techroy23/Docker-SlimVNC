@@ -15,7 +15,6 @@ echo "$XDG_RUNTIME_DIR"
 echo " "
 
 echo "Checking and removing stale VNC lock files and Temporary files..."
-ls /tmp/
 for lock_file in /tmp/.X[0-9]*-lock; do
     if [ -e "$lock_file" ]; then
         echo " "
@@ -27,6 +26,29 @@ done
 if [ -e /tmp/.X11-unix ]; then
         echo "Found stale /tmp/.X11-unix. Removing it..."
     rm -rf /tmp/.X11-unix
+fi
+echo " "
+
+echo "#####  Checking Chrome and removing stale chrome files #####"
+if [ -L "/root/.config/google-chrome/SingletonLock" ]; then
+	echo " "
+    echo "SingletonLock detected, attempting removal..."
+    unlink /root/.config/google-chrome/SingletonLock 2>/dev/null && echo "The symlink for SingletonLock has been successfully removed."
+    rm -f /root/.config/google-chrome/SingletonLock && echo "The SingletonLock file has been successfully removed."
+fi
+
+if [ -L "/root/.config/google-chrome/SingletonSocket" ]; then
+	echo " "
+    echo "SingletonSocket detected, attempting removal..."
+    unlink /root/.config/google-chrome/SingletonSocket 2>/dev/null && echo "The symlink for SingletonSocket has been successfully removed."
+    rm -f /root/.config/google-chrome/SingletonSocket && echo "The SingletonSocket file has been successfully removed."
+fi
+
+if [ -L "/root/.config/google-chrome/SingletonCookie" ]; then
+	echo " "
+    echo "SingletonCookie detected, attempting removal..."
+    unlink /root/.config/google-chrome/SingletonCookie 2>/dev/null && echo "The symlink for SingletonCookie has been successfully removed."
+    rm -f /root/.config/google-chrome/SingletonCookie && echo "The SingletonCookie file has been successfully removed."
 fi
 echo " "
 
@@ -171,31 +193,6 @@ else
     echo "Skipping custom-entrypoint.sh as it is not present."
 fi
 echo " "
-
-echo "#####  Checking Chrome and removing stale chrome files #####"
-/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds &
-sleep 10
-if pgrep -f google-chrome-stable > /dev/null; then
-    pkill google-chrome-stable
-    echo "Chrome process terminated."
-else
-    echo "Chrome is not running, skipping pkill."
-fi
-
-files=(
-    "/root/.config/google-chrome/SingletonLock"
-    "/root/.config/google-chrome/SingletonSocket"
-    "/root/.config/google-chrome/SingletonCookie"
-)
-
-for file in "${files[@]}"; do
-    if [[ -e "$file" ]]; then
-        rm -rf "$file"
-        echo "Removed: $file"
-    else
-        echo "File not found: $file"
-    fi
-done
 
 echo "##### Running Indefinitely #####"
 tail -f /dev/null
