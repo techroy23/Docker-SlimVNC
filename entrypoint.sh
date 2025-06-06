@@ -172,7 +172,16 @@ else
 fi
 echo " "
 
-echo "#####  Checking and removing stale chrome files #####"
+echo "#####  Checking Chrome and removing stale chrome files #####"
+/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds &
+sleep 10
+if pgrep -f google-chrome-stable > /dev/null; then
+    pkill google-chrome-stable
+    echo "Chrome process terminated."
+else
+    echo "Chrome is not running, skipping pkill."
+fi
+
 files=(
     "/root/.config/google-chrome/SingletonLock"
     "/root/.config/google-chrome/SingletonSocket"
