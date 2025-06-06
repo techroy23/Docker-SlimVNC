@@ -1,6 +1,8 @@
 #!/bin/bash
 
-echo "Starting up ..."
+echo "### ### ### ### ###"
+echo " Starting up ... "
+echo "### ### ### ### ###"
 set -e
 mkdir -p ~/.vnc
 mkdir -p ~/.config/google-chrome
@@ -8,20 +10,23 @@ mkdir -p ~/Templates
 mkdir -p /run/dbus
 mkdir -p /run/user/$(id -u)
 chmod 700 /run/user/$(id -u)
-export DISPLAY=:0
 export XDG_RUNTIME_DIR=/run/user/$(id -u)
 echo "$DISPLAY"
 echo "$XDG_RUNTIME_DIR"
 echo " "
 
-echo "Removing temporary files..."
+echo "### ### ### ### ### ### ### ###"
+echo " Removing temporary files ... "
+echo "### ### ### ### ### ### ### ###"
 sleep 1
 find /tmp -type l -exec unlink {} + &
 sleep 1
 rm -rf /tmp/* &
 echo " "
 
-echo "#####  Checking Chrome and removing stale chrome files #####"
+echo "### ### ### ### ### ### ### ### ### ### ### ### ###"
+echo " Checking Chrome and removing stale chrome files "
+echo "### ### ### ### ### ### ### ### ### ### ### ### ###"
 if [ -L "/root/.config/google-chrome/SingletonLock" ]; then
 	echo " "
     echo "SingletonLock detected, attempting removal..."
@@ -44,7 +49,9 @@ if [ -L "/root/.config/google-chrome/SingletonCookie" ]; then
 fi
 echo " "
 
-echo "Setting up variables ..."
+echo "### ### ### ### ### ### ###"
+echo " Setting up variables ... "
+echo "### ### ### ### ### ### ###"
 if [ -z "$VNC_PASS" ]; then
     echo "WARNING: VNC_PASS was not set! Using default password: 'password'"
     echo "Consider redeploying the Docker container with -e VNC_PASS='your_secure_password'"
@@ -52,28 +59,54 @@ if [ -z "$VNC_PASS" ]; then
 else
     export VNC_PASS
 fi
+export DISPLAY=:0
+export VNC_DISPLAY=":0"
+DISPLAY=:0
 VNC_DISPLAY=":0"
-VNC_PORT=5901
-NOVNC_PORT=6080
+VNC_PORT=${VNC_PORT:-5901}
+NOVNC_PORT=${NOVNC_PORT:-6080}
 SCREEN_RESOLUTION="1600x900x24"
 echo " "
 
-echo "Starting virtual framebuffer ..."
-Xvfb $VNC_DISPLAY -screen 0 $SCREEN_RESOLUTION &
-for i in {1..3}; do
-    echo "Waiting for Xvfb to start..."
-    sleep 5
+echo "### ### ### ### ### ### ### ### ###"
+echo " Starting virtual framebuffer ... "
+echo "### ### ### ### ### ### ### ### ###"
+max_attempts=999
+attempt=0
+
+while [ $attempt -lt $max_attempts ]; do
+	new_display_num=$(shuf -i 100-10000 -n 1)
+	export DISPLAY=":$new_display_num"
+    export VNC_DISPLAY=":$new_display_num"
+	DISPLAY=":$new_display_num"
+    VNC_DISPLAY=":$new_display_num"
+	echo "Attempt $((attempt+1)): Starting Xvfb on display $DISPLAY with resolution $SCREEN_RESOLUTION..."
+    Xvfb $DISPLAY -screen 0 $SCREEN_RESOLUTION &
+    sleep 3
     if pgrep -x Xvfb > /dev/null; then
-        echo "Xvfb started successfully!"
+        echo "Xvfb started successfully on display $DISPLAY!"
         break
-    elif [ "$i" -eq 3 ]; then
-        echo "ERROR: Xvfb failed to start."
-        exit 255
+    else
+        echo "Xvfb failed to start on display $DISPLAY."
+        if [ $attempt -lt $((max_attempts - 1)) ]; then
+            new_display_num=$(shuf -i 100-1000 -n 1)
+            export DISPLAY=":$new_display_num"
+            export VNC_DISPLAY=":$new_display_num"
+			DISPLAY=":$new_display_num"
+            VNC_DISPLAY=":$new_display_num"
+            echo "Trying alternative display: $DISPLAY"
+        else
+            echo "ERROR: Xvfb failed to start after $max_attempts attempts."
+            exit 255
+        fi
     fi
+    attempt=$((attempt+1))
 done
 echo " "
 
-echo "Starting D-Bus..."
+echo "### ### ### ### ###"
+echo " Starting D-Bus... "
+echo "### ### ### ### ###"
 export DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
 dbus-uuidgen > /etc/machine-id
 dbus-daemon --system --fork
@@ -90,7 +123,9 @@ for i in {1..3}; do
 done
 echo " "
 
+echo "### ### ### ### ###"
 echo "Starting Openbox..."
+echo "### ### ### ### ###"
 openbox &
 for i in {1..3}; do
     echo "Waiting for Openbox to start..."
@@ -105,7 +140,9 @@ for i in {1..3}; do
 done
 echo " "
 
+echo "### ### ### ### ###"
 echo "Starting LXPanel..."
+echo "### ### ### ### ###"
 lxpanel &
 for i in {1..3}; do
     echo "Waiting for LXPanel to start..."
@@ -120,8 +157,10 @@ for i in {1..3}; do
 done
 echo " "
 
-echo "Starting Conky..."
-conky -d
+echo "### ### ### ### ###"
+echo " Starting Conky... "
+echo "### ### ### ### ###"
+DISPLAY=$VNC_DISPLAY conky -d -b -X $VNC_DISPLAY
 for i in {1..3}; do
     echo "Waiting for Conky to start..."
     sleep 5
@@ -135,8 +174,11 @@ for i in {1..3}; do
 done
 echo " "
 
+echo "### ### ### ### ### ### ###"
 echo "Starting the VNC server ..."
+echo "### ### ### ### ### ### ###"
 x11vnc -storepasswd "$VNC_PASS" ~/.vnc/passwd
+echo "Using $VNC_DISPLAY for display and $VNC_PORT for vnc port"
 x11vnc -quiet -display $VNC_DISPLAY -rfbauth ~/.vnc/passwd -forever -rfbport $VNC_PORT -localhost &
 for i in {1..3}; do
     echo "Waiting for VNC server to start..."
@@ -146,12 +188,15 @@ for i in {1..3}; do
         break
     elif [ "$i" -eq 3 ]; then
         echo "ERROR: VNC server failed to start."
+
         exit 255
     fi
 done
 echo " "
 
-echo "Starting noVNC on port $NOVNC_PORT..."
+echo "### ### ### ### ### ### ### ### ### ###"
+echo " Starting noVNC on port $NOVNC_PORT... "
+echo "### ### ### ### ### ### ### ### ### ###"
 /opt/noVNC/utils/novnc_proxy --vnc localhost:$VNC_PORT --listen $NOVNC_PORT &
 for i in {1..3}; do
     echo "Waiting for noVNC to start..."
@@ -166,7 +211,9 @@ for i in {1..3}; do
 done
 echo " "
 
-echo "Starting custom-entrypoint.sh ..."
+echo "### ### ### ### ### ### ### ### ###"
+echo " Starting custom-entrypoint.sh ... "
+echo "### ### ### ### ### ### ### ### ###"
 if [ -f "/custom-entrypoint.sh" ]; then
     echo "Running custom-entrypoint.sh in the background ..."
     /custom-entrypoint.sh &
@@ -175,6 +222,8 @@ else
 fi
 echo " "
 
-echo "##### Running Indefinitely #####"
+echo "### ### ### ### ### ### ###"
+echo " Running Indefinitely ... "
+echo "### ### ### ### ### ### ###"
 tail -f /dev/null
 echo " "
