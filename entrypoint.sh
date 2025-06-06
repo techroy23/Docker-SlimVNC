@@ -14,19 +14,11 @@ echo "$DISPLAY"
 echo "$XDG_RUNTIME_DIR"
 echo " "
 
-echo "Checking and removing stale VNC lock files and Temporary files..."
-for lock_file in /tmp/.X[0-9]*-lock; do
-    if [ -e "$lock_file" ]; then
-        echo " "
-        echo "Found stale $lock_file. Removing it..."
-        rm -f "$lock_file"
-    fi
-done
-
-if [ -e /tmp/.X11-unix ]; then
-        echo "Found stale /tmp/.X11-unix. Removing it..."
-    rm -rf /tmp/.X11-unix
-fi
+echo "Removing temporary files..."
+sleep 1
+find /tmp -type l -exec unlink {} + &
+sleep 1
+rm -rf /tmp/* &
 echo " "
 
 echo "#####  Checking Chrome and removing stale chrome files #####"
@@ -64,17 +56,6 @@ VNC_DISPLAY=":0"
 VNC_PORT=5901
 NOVNC_PORT=6080
 SCREEN_RESOLUTION="1600x900x24"
-echo " "
-
-echo "Setting defaults ..."
-cat <<EOF > /usr/local/bin/google-chrome-no-sandbox
-#!/bin/bash
-/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds "\$@"
-EOF
-chmod +x /usr/local/bin/google-chrome-no-sandbox
-update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-no-sandbox 100
-update-alternatives --set x-www-browser /usr/local/bin/google-chrome-no-sandbox
-update-alternatives --set x-terminal-emulator /usr/bin/lxterminal
 echo " "
 
 echo "Starting virtual framebuffer ..."

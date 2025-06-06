@@ -1,16 +1,21 @@
 FROM debian:latest
 
-RUN apt-get update 
+RUN apt-get update -y && apt-get install -y \
+    git x11vnc xvfb dbus dbus-x11 \
+    && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt-get install -y git x11vnc xvfb dbus dbus-x11 
-RUN apt-get install -y openbox lxpanel lxterminal menu
-RUN apt-get install -y conky gdebi curl wget nano htop btop net-tools
+RUN apt-get update -y && apt-get install -y \
+    openbox lxpanel lxterminal menu \
+    && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY conf/conky.conf /etc/conky/conky.conf
+RUN apt-get update -y && apt-get install -y \
+    conky gdebi curl wget nano htop btop net-tools \
+    && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+RUN apt-get update -y && wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     gdebi --n /tmp/google-chrome-stable.deb && \
-    rm /tmp/google-chrome-stable.deb
+    rm /tmp/google-chrome-stable.deb \
+    && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN git clone https://github.com/novnc/noVNC /opt/noVNC && \
     chmod +x /opt/noVNC/utils/novnc_proxy && \
@@ -26,7 +31,14 @@ RUN sed -i 's|Exec=/usr/bin/google-chrome-stable %U|Exec=/usr/bin/google-chrome-
 RUN sed -i 's|Exec=/usr/bin/google-chrome-stable|Exec=/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds |' /usr/share/applications/google-chrome.desktop
 RUN sed -i 's|Exec=/usr/bin/google-chrome-stable --incognito|Exec=/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds --incognito |' /usr/share/applications/google-chrome.desktop
 
-RUN rm -rf /var/lib/apt/lists/*
+RUN echo '#!/bin/bash' > /usr/local/bin/google-chrome-no-sandbox && \
+    echo '/usr/bin/google-chrome-stable --no-sandbox --disable-gpu --disable-dbus --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds "$@"' >> /usr/local/bin/google-chrome-no-sandbox && \
+    chmod +x /usr/local/bin/google-chrome-no-sandbox && \
+    update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-no-sandbox 100 && \
+    update-alternatives --set x-www-browser /usr/local/bin/google-chrome-no-sandbox && \
+    update-alternatives --set x-terminal-emulator /usr/bin/lxterminal
+
+COPY conf/conky.conf /etc/conky/conky.conf
 
 EXPOSE 5901 6080
 
