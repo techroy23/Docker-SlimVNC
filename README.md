@@ -28,8 +28,21 @@ docker run -d --name docker-slimvnc \
 docker run -d --name docker-slimvnc \
   -e VNC_PASS="your_secure_password" \
   -e VNC_PORT=5555 \
-  -e NOVNC_PORT=6666 \
-  -p 5555:5555 -p 6666:6666 \
+  -e NOVNC_PORT=5556 \
+  -p 5555:5555 -p 5556:5556 \
+  -v docker-slimvnc-google-chrome:/root/.config/google-chrome \
+  --shm-size=2gb \
+  ghcr.io/techroy23/docker-slimvnc:latest
+
+# Option:3 - with screenshot sent to telegram.
+docker run -d --name docker-slimvnc \
+  -e VNC_PASS="your_secure_password" \
+  -e VNC_PORT=5555 \
+  -e NOVNC_PORT=5556 \
+  -e TELEGRAM_BOT_TOKEN=##########:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX \
+  -e TELEGRAM_CHAT_ID=########## \
+  -e CONTAINER_NAME="container-xx" \
+  -p 5555:5555 -p 5556:5556 \
   -v docker-slimvnc-google-chrome:/root/.config/google-chrome \
   --shm-size=2gb \
   ghcr.io/techroy23/docker-slimvnc:latest

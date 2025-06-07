@@ -224,6 +224,26 @@ else
 fi
 echo " "
 
+# --- Start of Telegram notification block ---
+tg_screenshot() {
+    while true; do
+        if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            screenshot_file="/tmp/screenshot.png"
+            sleep 5
+            scrot "$screenshot_file"
+
+            curl -s -F chat_id="$TELEGRAM_CHAT_ID" \
+                 -F document=@"$screenshot_file" \
+                 -F caption="Screenshot from container [ '$CONTAINER_NAME' ]." \
+                 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument"
+        fi
+        sleep 60
+    done
+}
+# --- End of Telegram notification block ---
+
+tg_screenshot &
+
 echo "### ### ### ### ### ### ###"
 echo " Running Indefinitely ... "
 echo "### ### ### ### ### ### ###"

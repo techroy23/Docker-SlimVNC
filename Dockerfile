@@ -5,11 +5,11 @@ RUN apt-get update -y && apt-get install -y \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install -y \
-    openbox lxpanel lxterminal menu \
+    openbox lxpanel lxterminal menu conky \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install -y \
-    conky gdebi curl wget nano htop btop net-tools \
+    scrot gdebi curl wget nano htop btop net-tools \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
