@@ -36,20 +36,6 @@ docker run -d --name docker-slimvnc \
   --shm-size=2gb \
   ghcr.io/techroy23/docker-slimvnc:latest
 
-# Option:3 - customized ports with screenshot sent to telegram.
-docker run -d --name docker-slimvnc \
-  --pull=always
-  -e VNC_PASS="your_secure_password" \
-  -e VNC_PORT=5555 \
-  -e NOVNC_PORT=5556 \
-  -e TELEGRAM_BOT_TOKEN="##########:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
-  -e TELEGRAM_CHAT_ID="##########" \
-  -e CONTAINER_NAME="container-xx" \
-  -p 5555:5555 -p 5556:5556 \
-  -v docker-slimvnc-google-chrome:/root/.config/google-chrome \
-  --shm-size=2gb \
-  ghcr.io/techroy23/docker-slimvnc:latest
-
 ```
 
 ## Access
