@@ -22,6 +22,8 @@ sleep 1
 find /tmp -type l -exec unlink {} + &
 sleep 1
 rm -rf /tmp/* &
+sleep 1
+rm -f /run/dbus/pid  &
 echo " "
 
 echo "### ### ### ### ### ### ### ### ### ### ### ### ###"
