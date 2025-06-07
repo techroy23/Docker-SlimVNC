@@ -249,15 +249,17 @@ tg_screenshot() {
     while true; do
         if validate_telegram; then
             screenshot_file="/tmp/screenshot.png"
-            sleep 5
+            sleep 2
             scrot "$screenshot_file" && echo "Screenshot captured successfully." || echo "Failed to capture screenshot."
-
+            sleep 2
             if [ -f "$screenshot_file" ]; then
                 response=$(curl -s -w "%{http_code}" -o /dev/null -F chat_id="$TELEGRAM_CHAT_ID" \
                             -F document=@"$screenshot_file" \
                             -F caption="Screenshot from container [ $CONTAINER_NAME ]." \
                             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument")
-                
+
+                echo "$response"
+
                 if [ "$response" -eq 200 ]; then
                     echo "Screenshot sent successfully."
                 else
