@@ -224,58 +224,6 @@ else
 fi
 echo " "
 
-# --- Start of Telegram notification block ---
-validate_telegram() {
-    if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
-        echo "Telegram credentials detected."
-        test_response=$(curl -s "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getMe" | jq -r '.ok')
-
-        if [ "$test_response" != "true" ]; then
-            echo "Invalid Telegram Bot Token. Screenshot process will not run."
-            return 1
-        else
-            echo "Telegram Bot Token validated successfully."
-            return 0
-        fi
-    else
-        echo "Telegram Bot Token or Chat ID is missing. Screenshot process will not run."
-        return 1
-    fi
-}
-
-tg_screenshot() {
-    local interval=${TELEGRAM_INTERVAL:-300}  # Default to 300 sec unless TELEGRAM_INTERVAL is set
-
-    while true; do
-        if validate_telegram; then
-            screenshot_file="/tmp/screenshot.png"
-            sleep 2
-            scrot "$screenshot_file" && echo "Screenshot captured successfully." || echo "Failed to capture screenshot."
-            sleep 2
-            if [ -f "$screenshot_file" ]; then
-                response=$(curl -s -w "%{http_code}" -o /dev/null -F chat_id="$TELEGRAM_CHAT_ID" \
-                            -F document=@"$screenshot_file" \
-                            -F caption="Screenshot from container [ $CONTAINER_NAME ]." \
-                            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument")
-
-                echo "$response"
-
-                if [ "$response" -eq 200 ]; then
-                    echo "Screenshot sent successfully."
-                else
-                    echo "Screenshot taken but failed to send. HTTP response: $response"
-                fi
-            fi
-        else
-            echo "Skipping screenshot process due to missing or invalid credentials."
-        fi
-        sleep "$interval"
-    done
-}
-
-tg_screenshot &
-# --- End of Telegram notification block ---
-
 echo "### ### ### ### ### ### ###"
 echo " Running Indefinitely ... "
 echo "### ### ### ### ### ### ###"
