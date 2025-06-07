@@ -234,15 +234,15 @@ tg_screenshot() {
 
             curl -s -F chat_id="$TELEGRAM_CHAT_ID" \
                  -F document=@"$screenshot_file" \
-                 -F caption="Screenshot from container [ '$CONTAINER_NAME' ]." \
+                 -F caption="Screenshot from container [ $CONTAINER_NAME ]." \
                  "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument"
         fi
-        sleep 60
+        sleep 300
     done
 }
-# --- End of Telegram notification block ---
 
 tg_screenshot &
+# --- End of Telegram notification block ---
 
 echo "### ### ### ### ### ### ###"
 echo " Running Indefinitely ... "
