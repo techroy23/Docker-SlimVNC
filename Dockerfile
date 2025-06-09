@@ -11,7 +11,7 @@ RUN apt-get update -y && apt-get install -y \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install -y \
-    scrot gdebi curl wget nano htop btop net-tools jq iproute2 tcpdump tshark \
+    scrot gdebi curl wget nano htop btop net-tools jq iproute2 tcpdump tshark iputils-ping \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
