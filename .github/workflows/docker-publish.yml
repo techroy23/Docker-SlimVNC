@@ -74,7 +74,7 @@ jobs:
         env:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
         run: |
-          REPOS=("techroy23/Docker-Peer2Profit" "techroy23/Docker-Wipter" "techroy23/Docker-UrNetwork" "techroy23/Docker-EarnApp")
+          REPOS=("techroy23/Docker-Peer2Profit" "techroy23/Docker-Wipter" "techroy23/Docker-UrNetwork" "techroy23/Docker-EarnApp" "techroy23/Docker-Chrome")
 
           for REPO in "${REPOS[@]}"; do
             echo "🔄 Sending dispatch to $REPO..."
