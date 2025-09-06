@@ -142,22 +142,22 @@ for i in {1..3}; do
 done
 echo " "
 
-echo "### ### ### ### ###"
-echo "Starting LXPanel..."
-echo "### ### ### ### ###"
-lxpanel &
-for i in {1..3}; do
-    echo "Waiting for LXPanel to start..."
-    sleep 5
-    if pgrep -x lxpanel > /dev/null; then
-        echo "LXPanel started successfully!"
-        break
-    elif [ "$i" -eq 3 ]; then
-        echo "ERROR: LXPanel failed to start."
-        exit 255
-    fi
-done
-echo " "
+# echo "### ### ### ### ###"
+# echo "Starting LXPanel..."
+# echo "### ### ### ### ###"
+# lxpanel &
+# for i in {1..3}; do
+#     echo "Waiting for LXPanel to start..."
+#     sleep 5
+#     if pgrep -x lxpanel > /dev/null; then
+#         echo "LXPanel started successfully!"
+#         break
+#     elif [ "$i" -eq 3 ]; then
+#         echo "ERROR: LXPanel failed to start."
+#         exit 255
+#     fi
+# done
+# echo " "
 
 echo "### ### ### ### ###"
 echo " Starting Conky... "
