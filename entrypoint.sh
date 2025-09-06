@@ -159,6 +159,25 @@ echo " "
 # done
 # echo " "
 
+
+echo "### ### ### ### ###"
+echo "Starting tint2 ... "
+echo "### ### ### ### ###"
+tint2 &
+for i in {1..3}; do
+    echo "Waiting for tint2 to start..."
+    sleep 5
+    if pgrep -x tint2 > /dev/null; then
+        echo "tint2 started successfully!"
+        break
+    elif [ "$i" -eq 3 ]; then
+        echo "ERROR: tint2 failed to start."
+        exit 255
+    fi
+done
+echo " "
+
+
 echo "### ### ### ### ###"
 echo " Starting Conky... "
 echo "### ### ### ### ###"
