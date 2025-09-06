@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM ubuntu:22.04
  
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -7,7 +7,7 @@ RUN apt-get update -y && apt-get install -y \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install -y \
-    openbox conky-all \
+    openbox tint2 conky-all \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install -y \
