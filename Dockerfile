@@ -37,8 +37,7 @@ RUN echo '#!/bin/bash' > /usr/local/bin/google-chrome-no-sandbox && \
     echo '/usr/bin/google-chrome-stable --disable-gpu --disable-dbus --no-sandbox --no-process-singleton-dialog --no-default-browser-check --no-first-run --no-managed-user-acknowledgment --enable-unsafe-swiftshader --use-gl=swiftshader --ignore-gpu-blocklist --disable-gpu-driver-bug-workarounds "$@"' >> /usr/local/bin/google-chrome-no-sandbox && \
     chmod +x /usr/local/bin/google-chrome-no-sandbox && \
     update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/local/bin/google-chrome-no-sandbox 100 && \
-    update-alternatives --set x-www-browser /usr/local/bin/google-chrome-no-sandbox && \
-    update-alternatives --set x-terminal-emulator /usr/bin/lxterminal
+    update-alternatives --set x-www-browser /usr/local/bin/google-chrome-no-sandbox
 
 COPY conf/conky.conf /etc/conky/conky.conf
 
