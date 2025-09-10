@@ -2,22 +2,22 @@ FROM ubuntu:24.04
  
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -y && apt-get install -y \
+RUN apt-get update -y && apt-get install --no-install-recommends -y \
     git x11vnc xvfb dbus dbus-x11 \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt-get update -y && apt-get install -y \
+RUN apt-get update -y && apt-get install --no-install-recommends -y \
     openbox lxterminal menu conky-all \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt-get update -y && apt-get install -y \
-    scrot gdebi curl wget nano htop net-tools jq iproute2 iputils-ping procps dnsutils \
+RUN apt-get update -y && apt-get install --no-install-recommends -y \
+    scrot gdebi curl wget nano htop net-tools jq iproute2 iputils-ping procps dnsutils chromium-browser \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN apt-get update -y && wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    gdebi --n /tmp/google-chrome-stable.deb && \
-    rm /tmp/google-chrome-stable.deb \
-    && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# RUN apt-get update -y && wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+#     gdebi --n /tmp/google-chrome-stable.deb && \
+#     rm /tmp/google-chrome-stable.deb \
+#     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN git clone https://github.com/novnc/noVNC /opt/noVNC && \
     chmod +x /opt/noVNC/utils/novnc_proxy && \
