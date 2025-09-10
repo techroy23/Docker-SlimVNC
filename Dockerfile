@@ -7,7 +7,7 @@ RUN apt-get update -y && apt-get install --no-install-recommends -y \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install --no-install-recommends -y \
-    openbox lxterminal menu conky-all \
+    openbox lxpanel lxterminal menu conky-all \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install --no-install-recommends -y \
