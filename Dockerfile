@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
  
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -7,11 +7,11 @@ RUN apt-get update -y && apt-get install -y \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install -y \
-    openbox tint2 conky-all \
+    openbox lxterminal menu conky-all \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && apt-get install -y \
-    scrot gdebi curl wget nano htop net-tools jq iproute2 iputils-ping procps \
+    scrot gdebi curl wget nano htop net-tools jq iproute2 iputils-ping procps dnsutils \
     && apt-get autoclean -y && apt-get autoremove -y && apt-get autopurge -y && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN apt-get update -y && wget -O /tmp/google-chrome-stable.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
