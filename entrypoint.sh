@@ -128,7 +128,8 @@ echo " "
 echo "### ### ### ### ###"
 echo "Starting Openbox..."
 echo "### ### ### ### ###"
-openbox &
+# openbox &
+openbox 2>/dev/null &
 for i in {1..3}; do
     echo "Waiting for Openbox to start..."
     sleep 5
@@ -145,7 +146,8 @@ echo " "
 echo "### ### ### ### ###"
 echo "Starting LXPanel..."
 echo "### ### ### ### ###"
-lxpanel &
+# lxpanel &
+lxpanel 2>/dev/null &
 for i in {1..3}; do
     echo "Waiting for LXPanel to start..."
     sleep 5
@@ -190,7 +192,6 @@ for i in {1..3}; do
         break
     elif [ "$i" -eq 3 ]; then
         echo "ERROR: VNC server failed to start."
-
         exit 255
     fi
 done
